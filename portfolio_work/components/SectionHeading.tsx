@@ -49,13 +49,13 @@ export default function SectionHeading({
   description?: string;
 }) {
   return (
-    <div className="mb-12 md:mb-16">
+    <div className="section-heading">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.45, ease: EASE }}
-        className="flex items-center gap-3"
+        className="section-heading-meta flex items-center gap-3"
       >
         <span className="eyebrow" style={{ color: "var(--section-accent)" }}>
           {index}
@@ -71,7 +71,7 @@ export default function SectionHeading({
         <span className="eyebrow">{eyebrow}</span>
       </motion.div>
 
-      <h2 className="h2 mt-4">
+      <h2 className="h2 section-heading-title">
         <WordReveal text={title} delay={0.08} />
       </h2>
 
@@ -81,7 +81,7 @@ export default function SectionHeading({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.22, ease: EASE }}
-          className="lede mt-3"
+          className="lede section-heading-description"
         >
           {description}
         </motion.p>

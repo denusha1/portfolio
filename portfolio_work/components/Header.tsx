@@ -1,203 +1,83 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { navLinks } from "@/lib/data";
 import { goToSection, goToTop } from "@/lib/nav";
 import ThemeToggle from "./ThemeToggle";
 
-// Mirrors the --section-accent each section sets, so the nav pill takes on
-// the colour of the section you're actually in.
-const SECTION_HUES: Record<string, string> = {
-  about: "var(--c-blue)",
-  work: "var(--c-violet)",
-  skills: "var(--c-teal)",
-  education: "var(--c-amber)",
-  contact: "var(--c-rose)",
-};
-
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
-
-  // Empty means "in the hero" — the observer below only ever fires on
-  // entry, so scrolling back up would otherwise leave the last section
-  // highlighted and Home never lit again.
-  const atTop = active === "";
-
+  const nav = useRef<HTMLElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 8);
-      if (y < 120) setActive("");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const threshold = window.innerHeight * .4;
+      let current = "";
+      for (const { href } of navLinks) {
+        const element = document.getElementById(href.slice(1));
+        if (element && element.getBoundingClientRect().top <= threshold) current = href;
+      }
+      if (window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) current = "#contact";
+      setActive(current);
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: "-45% 0px -50% 0px" }
-    );
-    navLinks.forEach(({ href }) => {
-      const el = document.getElementById(href.slice(1));
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  // Lock the page while the mobile sheet is open.
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    schedule();
+    const resize = new ResizeObserver(schedule);
+    resize.observe(document.body);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
-      document.body.style.overflow = "";
+      cancelAnimationFrame(frame);
+      resize.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    nav.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    const close = () => { setOpen(false); toggle.current?.focus(); };
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+      if (event.key === "Tab") {
+        const links = Array.from(nav.current?.querySelectorAll<HTMLAnchorElement>("a") ?? []);
+        const first = links[0];
+        const last = links[links.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); toggle.current?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); toggle.current?.focus(); }
+        else if (document.activeElement === toggle.current) { event.preventDefault(); (event.shiftKey ? last : first)?.focus(); }
+      }
+    };
+    const desktop = window.matchMedia("(min-width: 900px)");
+    const resize = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener("change", resize);
+    window.addEventListener("keydown", keyboard);
+    return () => { document.body.style.overflow = previous; desktop.removeEventListener("change", resize); window.removeEventListener("keydown", keyboard); };
   }, [open]);
 
-  const go = (href: string) => {
+  const navigate = (href: string) => {
     setOpen(false);
-    goToSection(href);
+    if (open) toggle.current?.focus();
+    if (href) goToSection(href); else goToTop();
   };
-
-  const home = () => {
-    setOpen(false);
-    goToTop();
-  };
-
-  return (
-    <>
-      <a href="#main" className="skip-link btn btn-primary btn-sm">
-        Skip to content
-      </a>
-
-      {/* Transparent over the hero so the aurora shows through, glass once
-          content starts passing underneath. */}
-      <header
-        className={`fixed inset-x-0 top-0 z-50 ${scrolled ? "glass" : ""}`}
-        style={{
-          background: scrolled ? undefined : "transparent",
-          borderBottom: `1px solid ${scrolled ? "var(--border)" : "transparent"}`,
-        }}
-      >
-        <div className="wrap flex h-16 items-center justify-between gap-6">
-          {/* "Home" is not a section, so it stays out of navLinks — those ids
-              drive the IntersectionObserver and there is no #home element.
-              It highlights whenever the hero is in view instead. */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              home();
-            }}
-            aria-current={atTop ? "true" : undefined}
-            className="rounded-md text-[0.9375rem] font-semibold tracking-tight no-underline transition-colors"
-            style={{ color: atTop ? "var(--text)" : "var(--text-3)" }}
-          >
-            Home
-          </a>
-
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Sections">
-            {navLinks.map(({ label, href }) => {
-              const id = href.slice(1);
-              const isActive = active === id;
-              return (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    go(href);
-                  }}
-                  aria-current={isActive ? "true" : undefined}
-                  className="relative rounded-md px-3 py-1.5 text-[0.8125rem] no-underline transition-colors"
-                  style={{ color: isActive ? "var(--text)" : "var(--text-3)" }}
-                >
-                  {/* A single pill that slides between links, rather than one
-                      that fades in and out per item. */}
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-md"
-                      style={{
-                        background: `color-mix(in srgb, ${SECTION_HUES[id] ?? "var(--accent)"} 12%, transparent)`,
-                      }}
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                    />
-                  )}
-                  <span className="relative">{label}</span>
-                </a>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <a href="/cv.pdf" download className="btn btn-ghost btn-sm hidden md:inline-flex">
-              Résumé
-            </a>
-            <button
-              type="button"
-              className="icon-btn md:hidden"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-label={open ? "Close menu" : "Open menu"}
-            >
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="glass fixed inset-0 top-16 z-40 md:hidden"
-          >
-            <nav className="wrap flex flex-col py-6" aria-label="Sections">
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  home();
-                }}
-                className="border-b py-4 text-lg no-underline"
-                style={{ borderColor: "var(--border)" }}
-              >
-                Home
-              </a>
-              {navLinks.map(({ label, href }) => (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    go(href);
-                  }}
-                  className="border-b py-4 text-lg no-underline"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  {label}
-                </a>
-              ))}
-              <a href="/cv.pdf" download className="btn btn-primary mt-6">
-                Download résumé
-              </a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+  return <>
+    <a href="#main" className="skip-link btn btn-primary btn-sm">Skip to content</a>
+    <header className="editorial-rail">
+      <a href="#" className="rail-monogram" aria-label="Denusha — home" onClick={event => { event.preventDefault(); navigate(""); }}>D<span>↗</span></a>
+      <span className="rail-caption">DEVELOPER<br />PORTFOLIO</span>
+      <button ref={toggle} type="button" className="rail-menu" aria-expanded={open} aria-controls="rail-navigation" aria-label={open ? "Close navigation" : "Open navigation"} onClick={() => setOpen(value => !value)}>{open ? <X size={20} /> : <Menu size={20} />}</button>
+      <nav ref={nav} id="rail-navigation" className={`rail-navigation ${open ? "is-open" : ""}`} aria-label="Portfolio sections">
+        {[{ label: "Home", href: "" }, ...navLinks].map(({ label, href }, index) => <a key={label} href={href || "#"} aria-current={active === href ? "location" : undefined} onClick={event => { event.preventDefault(); navigate(href); }}><span className="rail-index">0{index}</span><span>{label}</span><ArrowUpRight size={13} aria-hidden="true" /></a>)}
+        <a href="/cv.pdf" download className="rail-resume"><span className="rail-index">PDF</span><span>Résumé</span><ArrowUpRight size={13} /></a>
+      </nav>
+      <div className="rail-bottom"><ThemeToggle /><span>DESIGN + CODE</span></div>
+    </header>
+  </>;
 }

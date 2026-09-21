@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Runs before paint so the stored theme is applied without a flash.
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`;
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}})()`;
 
 export default async function RootLayout({
   children,

@@ -1,5 +1,6 @@
 "use client";
 
+import OutlineWord from "./OutlineWord";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
@@ -15,16 +16,11 @@ export default function Footer({ personalInfo }: { personalInfo: Profile }) {
 
   return (
     <footer className="relative border-t" style={{ borderColor: "var(--border)" }}>
-      {/* Hairline that carries the section palette across the full width. */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, var(--c-blue), var(--c-violet), var(--c-teal), var(--c-amber), var(--c-rose), transparent)",
-          opacity: 0.4,
-        }}
-        aria-hidden
-      />
+      <div className="wrap footer-signoff">
+        <p className="eyebrow">A person behind every project.</p>
+        <a href={`mailto:${personalInfo.email}`} className="footer-outline-link"><span className="sr-only">Say hello to {personalInfo.name} by email</span><OutlineWord>SAY HELLO</OutlineWord></a>
+        <p>Questions, ideas, or a chance to build together — I’d love to hear from you.</p>
+      </div>
 
       <div className="wrap flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs" style={{ color: "var(--text-3)" }}>

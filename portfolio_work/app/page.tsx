@@ -1,8 +1,10 @@
+import CinematicIntro from "@/components/CinematicIntro";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Work from "@/components/Work";
 import Skills from "@/components/Skills";
+import ExperienceArchive from "@/components/ExperienceArchive";
 import Education from "@/components/Education";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -22,18 +24,21 @@ export default async function Home() {
   ]);
 
   return (
-    <>
+    <CinematicIntro name={profile.shortName}>
+      <div className="portfolio-shell">
       <ScrollProgress />
       <Header />
-      <main id="main">
-        <Hero personalInfo={profile} featuredProject={projects.find((project) => project.featured)} />
+      <main id="main" tabIndex={-1}>
+        <Hero personalInfo={profile} />
         <About personalInfo={profile} />
         <Work projects={projects} />
-        <Skills skills={skills} />
+        <Skills skills={skills} projects={projects} />
+        <ExperienceArchive />
         <Education education={education} />
         <Contact personalInfo={profile} />
       </main>
       <Footer personalInfo={profile} />
-    </>
+      </div>
+    </CinematicIntro>
   );
 }

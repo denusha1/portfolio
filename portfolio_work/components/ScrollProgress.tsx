@@ -19,10 +19,8 @@ export default function ScrollProgress() {
         position: "fixed",
         insetInline: 0,
         top: 0,
-        height: "2px",
-        // Runs through the section hues in the order you meet them.
-        background:
-          "linear-gradient(90deg, var(--c-blue), var(--c-violet) 35%, var(--c-teal) 62%, var(--c-amber) 82%, var(--c-rose))",
+        height: "3px",
+        background: "var(--signal)",
         zIndex: 60,
       }}
     />

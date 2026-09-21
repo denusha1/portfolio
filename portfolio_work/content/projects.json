@@ -34,9 +34,9 @@
         "Flask REST APIs — evaluation and approval operations",
         "Supabase PostgreSQL — persistent application data"
       ],
-      "decisions": "",
+      "decisions": "The evaluation flow uses explicit review, approval and rejection states. Team views combine status filters and counts, while role-based access follows the organisational hierarchy. The interface connects to Flask REST APIs backed by Supabase PostgreSQL.",
       "lessons": "",
-      "outcome": ""
+      "outcome": "The implemented workflow supports team lookup, evaluation entry, review, approval and rejection with feedback and status tracking. Enquiry and notification modules handle disputes and workflow updates."
     }
   },
   {
@@ -70,9 +70,9 @@
         "Node.js / REST APIs — application services",
         "Markdown parser — formatted content preview"
       ],
-      "decisions": "",
+      "decisions": "Writing and formatting are connected through a Markdown editor with live preview and draft saving. Authentication and role-based access guard post management, and confirmation dialogs precede deletion.",
       "lessons": "",
-      "outcome": ""
+      "outcome": "The implementation covers authentication, drafting, live preview, post creation and editing, deletion, search and a personal profile dashboard."
     }
   },
   {
@@ -107,9 +107,9 @@
         "Motor drivers, motors and optical sensors — motion and sensing",
         "LCD interface — operator interaction"
       ],
-      "decisions": "",
+      "decisions": "The system uses ESP32 / GRBL for G-code-driven control with motors and optical sensors. My implementation connects the LCD operator interface and servo control with synchronised paper feeding and cutting.",
       "lessons": "",
-      "outcome": ""
+      "outcome": "My delivered work covers the LCD operator interface, servo control, paper-feed integration and Blender models for the machine’s components."
     }
   }
 ]

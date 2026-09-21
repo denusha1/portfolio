@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 /**
  * A single, quiet entrance used everywhere on the page: a short fade and a
- * 12px rise, once. Keeping one motion vocabulary is what stops a site from
+ * 24px rise as the content enters the viewport. Keeping one motion vocabulary is what stops a site from
  * feeling like a demo reel.
  */
 export default function Reveal({
@@ -22,9 +22,9 @@ export default function Reveal({
 
   return (
     <Component
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: false, amount: 0.08, margin: "0px" }}
       transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >

@@ -56,9 +56,10 @@ export default function ThemeToggle() {
     <motion.button
       type="button"
       onClick={toggle}
-      className="icon-btn overflow-hidden"
+      className="icon-btn theme-toggle overflow-hidden"
       style={{ borderColor: "transparent" }}
-      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={dark ? "Switch to Paper light theme" : "Switch to Ink dark theme"}
+      title={dark ? "Switch to Paper" : "Switch to Ink"}
       suppressHydrationWarning
       whileHover={{ color: dark ? "var(--c-amber)" : "var(--c-violet)" }}
       whileTap={{ scale: 0.92 }}
@@ -78,6 +79,7 @@ export default function ThemeToggle() {
           {dark ? <Sun size={17} /> : <Moon size={17} />}
         </motion.span>
       </AnimatePresence>
+      <span className="theme-toggle-label">{dark ? "Ink" : "Paper"}</span>
     </motion.button>
   );
 }

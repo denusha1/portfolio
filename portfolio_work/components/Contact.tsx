@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Check } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
@@ -11,6 +11,7 @@ import type { Profile } from "@/lib/content";
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function Contact({ personalInfo }: { personalInfo: Profile }) {
+  const reduced = useReducedMotion();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<Status>("idle");
 
@@ -21,6 +22,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (status === "sending") return;
     setStatus("sending");
     try {
       const res = await fetch("/api/contact", {
@@ -71,13 +73,13 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
     >
       <div className="wrap">
         <SectionHeading
-          index="05"
+          index="06"
           eyebrow="Contact"
-          title="Get in touch"
+          title="Let’s build something together."
           description="I'm looking for a software engineering internship. If you have a role, a question, or a project worth building — email is the fastest way to reach me."
         />
 
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-20">
+        <div className="contact-editorial-grid">
           <Reveal>
             <dl className="border-t" style={{ borderColor: "var(--border)" }}>
               {channels.map(({ label, value, href, Icon }, i) => (
@@ -115,16 +117,18 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
           </Reveal>
 
           <Reveal delay={0.08}>
+            <div className="contact-postcard">
+            <div className="postcard-heading"><div><p className="eyebrow">A postcard to</p><h3>{personalInfo.shortName}</h3><span>{personalInfo.location} · A little hello goes a long way.</span></div><span className="postcard-stamp" aria-hidden="true">✳<small>HELLO<br />FROM YOU</small></span></div>
             {status === "sent" ? (
-              <div className="card flex flex-col items-start gap-3 p-8">
+              <div className="postcard-success flex flex-col items-start gap-3" role="status">
                 <motion.span
-                  initial={{ scale: 0.6, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  initial={{ scale: reduced ? 1 : 1.8, rotate: reduced ? 0 : -22, opacity: 0 }}
+                  animate={{ scale: 1, rotate: -10, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 380, damping: 18 }}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full"
+                  className="postcard-sent-stamp"
                   style={{ background: "var(--accent-soft)", color: "var(--accent)" }}
                 >
-                  <Check size={18} />
+                  <Check size={20} /> SENT WITH A HELLO
                 </motion.span>
                 <h3 className="h3">Message sent</h3>
                 <p className="text-sm" style={{ color: "var(--text-2)" }}>
@@ -135,7 +139,8 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
                 </button>
               </div>
             ) : (
-              <form onSubmit={onSubmit} className="space-y-5">
+              <form onSubmit={onSubmit} className="space-y-5" aria-busy={status === "sending"}>
+                <fieldset disabled={status === "sending"} className="space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className="label" htmlFor="name">
@@ -147,6 +152,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
                       value={form.name}
                       onChange={onChange}
                       required
+                      maxLength={120}
                       autoComplete="name"
                       className="field"
                       placeholder="Your name"
@@ -163,6 +169,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
                       value={form.email}
                       onChange={onChange}
                       required
+                      maxLength={254}
                       autoComplete="email"
                       className="field"
                       placeholder="you@company.com"
@@ -180,14 +187,15 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
                     value={form.message}
                     onChange={onChange}
                     required
-                    rows={6}
+                    rows={5}
+                    maxLength={5000}
                     className="field resize-y"
                     placeholder="What would you like to talk about?"
                   />
                 </div>
 
                 {status === "error" && (
-                  <p className="text-sm" style={{ color: "#dc2626" }}>
+                  <p role="alert" className="text-sm" style={{ color: "var(--c-rose)" }}>
                     That didn&apos;t send. Please email me directly at{" "}
                     <a className="link-underline" href={`mailto:${personalInfo.email}`}>
                       {personalInfo.email}
@@ -213,11 +221,14 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
                         aria-hidden
                       />
                     )}
-                    {status === "sending" ? "Sending…" : "Send message"}
+                    {status === "sending" ? "Sending…" : "Send this postcard ↗"}
                   </motion.button>
                 </div>
+                </fieldset>
               </form>
             )}
+            <p className="postcard-footnote">Good conversations start with a simple hello.</p>
+            </div>
           </Reveal>
         </div>
       </div>

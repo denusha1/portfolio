@@ -9,8 +9,8 @@ export default function Education({ education }: { education: Education[] }) {
       className="section"
       style={{ "--section-accent": "var(--c-amber)" } as React.CSSProperties}
     >
-      <div className="wrap">
-        <SectionHeading index="04" eyebrow="Education" title="Academic background" />
+      <div className="wrap education-editorial">
+        <SectionHeading index="05" eyebrow="Education" title="Academic background" />
 
         <ol className="border-t" style={{ borderColor: "var(--border)" }}>
           {education.map((item, i) => (

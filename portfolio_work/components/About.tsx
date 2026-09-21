@@ -1,56 +1,32 @@
+import GreetingAvatar from "./GreetingAvatar";
+import StudioCorner from "./StudioCorner";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import type { Profile } from "@/lib/content";
 
 export default function About({ personalInfo }: { personalInfo: Profile }) {
+  const status = personalInfo.facts.find(fact => fact.label.toLowerCase() === "status")?.value;
   return (
-    <section
-      id="about"
-      className="section"
-      style={
-        { background: "var(--bg-subtle)", "--section-accent": "var(--c-blue)" } as React.CSSProperties
-      }
-    >
+    <section id="about" className="section about-editorial" style={{ background: "var(--bg-subtle)", "--section-accent": "var(--c-blue)" } as React.CSSProperties}>
       <div className="wrap">
-        <SectionHeading index="01" eyebrow="About" title="How I work" />
-
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-20">
-          <Reveal>
-            <div className="space-y-5" style={{ maxWidth: "62ch" }}>
-              {personalInfo.bio.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)} style={{ color: "var(--text-2)" }}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <h3 className="eyebrow">Interests</h3>
-            <ul className="mt-4">
-              {personalInfo.interests.map((interest) => (
-                <li
-                  key={interest}
-                  className="row flex items-start gap-3 border-b py-3 text-sm"
-                  style={{ borderColor: "var(--border)", color: "var(--text-2)" }}
-                >
-                  <span
-                    className="row-marker mt-2 h-1 w-1 shrink-0 rounded-full"
-                    style={{ background: "var(--border-strong)" }}
-                    aria-hidden
-                  />
-                  {interest}
-                </li>
-              ))}
-            </ul>
-
-            <h3 className="eyebrow mt-10">Currently</h3>
-            <p className="mt-4 text-sm" style={{ color: "var(--text-2)" }}>
-              Third year of the {personalInfo.degree} at the {personalInfo.university}, and
-              available for a software engineering internship.
-            </p>
-          </Reveal>
+        <SectionHeading index="01" eyebrow="The person behind the work" title="Curious mind. Builder at heart." />
+        <div className="profile-grid">
+          <div className="profile-info profile-info-left">
+            <Reveal><section className="profile-block"><p className="eyebrow">01 / What I do</p><h3>{personalInfo.role}</h3><p>I connect thoughtful interfaces with the logic that makes them work.</p><span className="profile-label">FULL-STACK DEVELOPMENT</span></section></Reveal>
+            <Reveal delay={.06}><section className="profile-block"><p className="eyebrow">02 / Where I learn</p><h3>{personalInfo.university}</h3><p>{personalInfo.degree}</p><dl className="profile-metric"><dt>CGPA</dt><dd>{personalInfo.cgpa}</dd></dl></section></Reveal>
+          </div>
+          <div className="profile-centrepiece">
+            <div className="profile-figure-meta"><span>PROFILE / 01</span><span>HELLO, WORLD ↗</span></div>
+            <div className="profile-photo-stage"><span className="profile-backdrop-word" aria-hidden="true">ME.</span><GreetingAvatar name={personalInfo.shortName} photoSrc="/denusha-full-body.png" fullBody /></div>
+            <p className="profile-signature">{personalInfo.name}<span>Ideas into things that work.</span></p>
+          </div>
+          <div className="profile-info profile-info-right">
+            <Reveal delay={.08}><section className="profile-block"><p className="eyebrow">03 / Home base</p><h3>{personalInfo.location}</h3>{status && <p className="profile-status"><span aria-hidden="true" />{status}</p>}<a className="profile-contact" href={`mailto:${personalInfo.email}`}>Let’s talk ↗</a></section></Reveal>
+            <Reveal delay={.12}><section className="profile-block"><p className="eyebrow">04 / What draws me in</p><h3>Always exploring.</h3><ul>{personalInfo.interests.map(interest => <li key={interest}>{interest}</li>)}</ul></section></Reveal>
+          </div>
         </div>
+        <div className="profile-story-grid"><div><p className="eyebrow">A little context</p><h3>How I work.</h3></div><div>{personalInfo.bio.map(paragraph => <Reveal key={paragraph.slice(0, 24)}><p>{paragraph}</p></Reveal>)}</div></div>
+        <StudioCorner />
       </div>
     </section>
   );
