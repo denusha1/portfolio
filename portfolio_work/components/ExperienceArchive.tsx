@@ -5,7 +5,7 @@ import { ArrowUpRight, ArrowDownWideNarrow } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import { archiveEntries, type ArchiveCategory } from "@/content/experience";
 
-const categories: ("All" | ArchiveCategory)[] = ["All", "Experience", "Certification", "Achievement"];
+const categories: ("All" | ArchiveCategory)[] = ["All", ...(["Experience", "Certification", "Achievement"] as ArchiveCategory[]).filter(category => archiveEntries.some(entry => entry.category === category))];
 export default function ExperienceArchive() {
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [newest, setNewest] = useState(true);

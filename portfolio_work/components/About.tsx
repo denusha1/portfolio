@@ -16,7 +16,7 @@ export default function About({ personalInfo }: { personalInfo: Profile }) {
           </div>
           <div className="profile-centrepiece">
             <div className="profile-figure-meta"><span>PROFILE / 01</span><span>HELLO, WORLD ↗</span></div>
-            <div className="profile-photo-stage"><span className="profile-backdrop-word" aria-hidden="true">ME.</span><GreetingAvatar name={personalInfo.shortName} photoSrc="/denusha-full-body.png" fullBody /></div>
+            <div className="profile-photo-stage"><GreetingAvatar name={personalInfo.shortName} photoSrc="/denusha-full-body.png" fullBody /></div>
             <p className="profile-signature">{personalInfo.name}<span>Ideas into things that work.</span></p>
           </div>
           <div className="profile-info profile-info-right">

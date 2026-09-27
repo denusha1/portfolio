@@ -12,7 +12,8 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 export default function Contact({ personalInfo }: { personalInfo: Profile }) {
   const reduced = useReducedMotion();
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", website: "" });
+  const [errorMessage, setErrorMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
   const onChange = (
@@ -23,6 +24,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
     e.preventDefault();
 
     if (status === "sending") return;
+    setErrorMessage("");
     setStatus("sending");
     try {
       const res = await fetch("/api/contact", {
@@ -30,10 +32,14 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      setForm({ name: "", email: "", message: "" });
+      if (!res.ok) {
+        const result = await res.json().catch(() => null);
+        throw new Error(result?.error || "Message could not be sent.");
+      }
+      setForm({ name: "", email: "", message: "", website: "" });
       setStatus("sent");
-    } catch {
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Message could not be sent.");
       setStatus("error");
     }
   };
@@ -141,6 +147,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
             ) : (
               <form onSubmit={onSubmit} className="space-y-5" aria-busy={status === "sending"}>
                 <fieldset disabled={status === "sending"} className="space-y-5">
+                <div hidden aria-hidden="true"><label htmlFor="contact-website">Leave this field empty</label><input id="contact-website" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={onChange} /></div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className="label" htmlFor="name">
@@ -196,7 +203,7 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
 
                 {status === "error" && (
                   <p role="alert" className="text-sm" style={{ color: "var(--c-rose)" }}>
-                    That didn&apos;t send. Please email me directly at{" "}
+                    {errorMessage} You can also email me directly at{" "}
                     <a className="link-underline" href={`mailto:${personalInfo.email}`}>
                       {personalInfo.email}
                     </a>

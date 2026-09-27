@@ -17,13 +17,16 @@ export default function CinematicIntro({ name, children }: { name: string; child
   const restoreFocus = useRef(false);
   const finish = useCallback(() => {
     restoreFocus.current = !!overlay.current?.contains(document.activeElement);
+    try { localStorage.setItem("portfolio-intro-seen", "1"); } catch { /* Storage may be unavailable. */ }
     setFinished(true);
   }, []);
 
   useEffect(() => {
     if (finished) return;
-    // Deep links and reduced-motion visits go straight to the portfolio.
-    if (window.location.hash || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let seen = false;
+    try { seen = localStorage.getItem("portfolio-intro-seen") === "1"; } catch { /* Keep the skip button available. */ }
+    // Returning visitors, deep links and reduced-motion visits go straight in.
+    if (seen || window.location.hash || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const frame = requestAnimationFrame(finish);
       return () => cancelAnimationFrame(frame);
     }

@@ -57,11 +57,4 @@ export const archiveEntries: ArchiveEntry[] = [
     description: "Implemented the LCD interface and servo control, synchronised paper feeding with cutting, and designed machine components in Blender.",
     url: "/projects/cnc#contribution",
   },
-  {
-    id: "LRN-001",
-    category: "Certification",
-    title: "Software, web & database coursework",
-    organization: "Certification & continuous learning · CV record",
-    description: "My CV records completed certifications and online courses in software development, web technologies and database systems. Individual credentials are not listed here yet.",
-  },
 ];

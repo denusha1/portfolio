@@ -9,10 +9,8 @@ export default function GreetingAvatar({ name, photoSrc = "/profile.jpg", fullBo
   const introReady = useIntroReady();
   const scene = useRef<HTMLDivElement>(null);
   const inView = useInView(scene, { amount: .35, once: true });
-  const [hour, setHour] = useState<number | null>(null);
   const [greeting, setGreeting] = useState(0);
   const [waving, setWaving] = useState(true);
-  const [language, setLanguage] = useState<"en" | "ta">("en");
   const [showPhoto, setShowPhoto] = useState(false);
   const [intro, setIntro] = useState(0);
   const reduced = useReducedMotion();
@@ -28,13 +26,6 @@ export default function GreetingAvatar({ name, photoSrc = "/profile.jpg", fullBo
     const timer = window.setTimeout(() => setShowPhoto(true), 5500);
     return () => window.clearTimeout(timer);
   }, [intro, introReady, inView]);
-
-  useEffect(() => {
-    const update = () => setHour(new Date().getHours());
-    update();
-    const timer = window.setInterval(update, 60_000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const reset = () => { x.set(0); y.set(0); };
@@ -56,21 +47,13 @@ export default function GreetingAvatar({ name, photoSrc = "/profile.jpg", fullBo
     };
   }, [reduced, x, y]);
 
-  const welcome = hour === null ? "Hi" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const tamilWelcome = hour === null ? "வணக்கம்" : hour < 12 ? "காலை வணக்கம்" : hour < 17 ? "மதிய வணக்கம்" : "மாலை வணக்கம்";
-  const greetings = language === "ta"
-    ? [`${tamilWelcome}!`, `வணக்கம்! நான் ${name}.`, "உங்களைச் சந்தித்ததில் மகிழ்ச்சி!", "சேர்ந்து உருவாக்கலாம்!"]
-    : [`${welcome}, I’m ${name}!`, "Hello there!", "Lovely to meet you!", "Let’s build something lovely."];
+  const greetings = [`Hi, I’m ${name}!`, "Hello there!", "Lovely to meet you!", "Let’s build something lovely."];
   // Separate the raised hand at its wrist so the greeting has a gentle wave.
   const hand = "M0 430 H345 V790 Q290 890 235 975 L115 935 Q45 810 0 760 Z";
   return (
     <div ref={scene} className="greeting-experience">
-    <div className="greeting-language" role="group" aria-label="Greeting language">
-      <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")}>EN</button>
-      <button type="button" lang="ta" aria-pressed={language === "ta"} onClick={() => setLanguage("ta")}>தமிழ்</button>
-    </div>
     <button type="button" className="hello-avatar" onPointerEnter={() => setWaving(true)} onPointerLeave={() => setWaving(false)} onFocus={() => setWaving(true)} onBlur={() => setWaving(false)} onClick={() => { setGreeting(value => (value + 1) % greetings.length); setWaving(true); }} aria-label={`Say hi to ${name} — change greeting`}>
-      <span className="hello-bubble" lang={language} aria-live="polite" aria-atomic="true"><span className="hello-wave" aria-hidden="true">👋</span>{greetings[greeting]}</span>
+      <span className="hello-bubble" lang="en" aria-live="polite" aria-atomic="true"><span className="hello-wave" aria-hidden="true">👋</span>{greetings[greeting]}</span>
       <span className={`hello-portrait hello-portrait-interactive ${showPhoto ? "showing-photo" : ""}`}>
         <motion.svg animate={{ opacity: showPhoto ? 0 : 1 }} transition={{ duration: reduced ? 0 : .7 }} aria-hidden={showPhoto} ref={portrait} viewBox="0 0 1145 1374" role="img" aria-label={`${name} smiling and waving in a lavender hoodie`}>
           <defs>
@@ -92,7 +75,7 @@ export default function GreetingAvatar({ name, photoSrc = "/profile.jpg", fullBo
     </button>
     <div className="greeting-view" role="group" aria-label="Portrait view">
       <button type="button" aria-pressed={!showPhoto} onClick={() => { setShowPhoto(false); setWaving(true); setIntro(value => value + 1); }}>↻ Replay hello</button>
-      <button type="button" aria-pressed={showPhoto} onClick={() => setShowPhoto(true)}>Meet the real me</button>
+      <button type="button" aria-pressed={showPhoto} onClick={() => setShowPhoto(true)}>View photo</button>
     </div>
     </div>
   );
