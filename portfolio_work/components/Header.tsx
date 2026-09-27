@@ -71,13 +71,13 @@ export default function Header() {
     <a href="#main" className="skip-link btn btn-primary btn-sm">Skip to content</a>
     <header className="editorial-rail">
       <a href="#" className="rail-monogram" aria-label="Denusha — home" onClick={event => { event.preventDefault(); navigate(""); }}>D<span>↗</span></a>
-      <span className="rail-caption">DEVELOPER<br />PORTFOLIO</span>
+      <span className="rail-caption">DEVELOPER<br />FIELD NOTES</span>
       <button ref={toggle} type="button" className="rail-menu" aria-expanded={open} aria-controls="rail-navigation" aria-label={open ? "Close navigation" : "Open navigation"} onClick={() => setOpen(value => !value)}>{open ? <X size={20} /> : <Menu size={20} />}</button>
       <nav ref={nav} id="rail-navigation" className={`rail-navigation ${open ? "is-open" : ""}`} aria-label="Portfolio sections">
         {[{ label: "Home", href: "" }, ...navLinks].map(({ label, href }, index) => <a key={label} href={href || "#"} aria-current={active === href ? "location" : undefined} onClick={event => { event.preventDefault(); navigate(href); }}><span className="rail-index">0{index}</span><span>{label}</span><ArrowUpRight size={13} aria-hidden="true" /></a>)}
         <a href="/cv.pdf" download className="rail-resume"><span className="rail-index">PDF</span><span>Résumé</span><ArrowUpRight size={13} /></a>
       </nav>
-      <div className="rail-bottom"><ThemeToggle /><span>DESIGN + CODE</span></div>
+      <div className="rail-bottom"><ThemeToggle /><span>BUILD / DOCUMENT</span></div>
     </header>
   </>;
 }

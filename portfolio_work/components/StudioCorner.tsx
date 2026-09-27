@@ -10,8 +10,8 @@ export default function StudioCorner() {
   return <div className="studio-corner">
     <div className="corner-heading"><div><p className="eyebrow">Away from the project cards</p><h3>A little more me.</h3></div><span className="corner-handwritten">Always a work in progress ↙</span></div>
     <div className="personal-story-intro"><OutlineWord>CURIOUS</OutlineWord><p>About the work. And the curiosity behind it.</p></div>
-    <div className="personal-story-grid">{storyPanels.map(panel => <section key={panel.label}><p className="eyebrow">{panel.label}</p><h4>{panel.title}</h4><p>{panel.text}</p><a href={panel.href} onClick={event => { event.preventDefault(); goToSection(panel.href); }}>{panel.link} ↗</a></section>)}</div>
-    <div className="corner-layout">
+    <div className="personal-story-grid responsive-split">{storyPanels.map(panel => <section key={panel.label}><p className="eyebrow">{panel.label}</p><h4>{panel.title}</h4><p>{panel.text}</p><a href={panel.href} onClick={event => { event.preventDefault(); goToSection(panel.href); }}>{panel.link} ↗</a></section>)}</div>
+    <div className="corner-layout responsive-split">
       <section className="now-corner" aria-labelledby="now-title">
         <p className="eyebrow"><span className="now-dot" aria-hidden="true" />The now corner</p><h4 id="now-title">On my mind. On my desk.</h4>
         {nowItems.map(item => <div className="now-item" key={item.label}><span>{item.label}</span><h5>{item.title}</h5><p>{item.detail}</p></div>)}

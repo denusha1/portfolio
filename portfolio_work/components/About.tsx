@@ -1,5 +1,4 @@
 import GreetingAvatar from "./GreetingAvatar";
-import StudioCorner from "./StudioCorner";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import type { Profile } from "@/lib/content";
@@ -26,7 +25,6 @@ export default function About({ personalInfo }: { personalInfo: Profile }) {
           </div>
         </div>
         <div className="profile-story-grid"><div><p className="eyebrow">A little context</p><h3>How I work.</h3></div><div>{personalInfo.bio.map(paragraph => <Reveal key={paragraph.slice(0, 24)}><p>{paragraph}</p></Reveal>)}</div></div>
-        <StudioCorner />
       </div>
     </section>
   );

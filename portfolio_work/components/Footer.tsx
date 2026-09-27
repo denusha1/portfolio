@@ -22,7 +22,7 @@ export default function Footer({ personalInfo }: { personalInfo: Profile }) {
         <p>Questions, ideas, or a chance to build together — I’d love to hear from you.</p>
       </div>
 
-      <div className="wrap flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <div className="wrap footer-bottom">
         <p className="text-xs" style={{ color: "var(--text-3)" }}>
           © {new Date().getFullYear()} {personalInfo.name}. Built with Next.js and Tailwind CSS.
           {/* Only while running locally — /admin 404s in production, so a
@@ -37,7 +37,7 @@ export default function Footer({ personalInfo }: { personalInfo: Profile }) {
           )}
         </p>
 
-        <div className="flex items-center gap-4">
+        <div className="footer-connections">
           {socials.map(({ Icon, href, label, hue }) => (
             <motion.a
               key={label}

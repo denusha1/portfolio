@@ -1,11 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { useInView, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useInView, useMotionValueEvent, useScroll } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { goToSection } from "@/lib/nav";
 
+const subscribeMotion = (notify: () => void) => {
+  const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  preference.addEventListener("change", notify);
+  return () => preference.removeEventListener("change", notify);
+};
+const motionSnapshot = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const serverMotionSnapshot = () => false;
 const FRAME_COUNT = 113;
 const framePath = (index: number) => `/frames/interface/${String(index).padStart(3, "0")}.svg`;
 const chapters = [
@@ -17,7 +24,7 @@ const chapters = [
 export default function ScrollSequence() {
   const container = useRef<HTMLDivElement>(null);
   const nearby = useInView(container, { margin: "600px 0px", once: true });
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, serverMotionSnapshot);
   const [loaded, setLoaded] = useState(false);
   const [frame, setFrame] = useState(0);
   const { scrollYProgress } = useScroll({ target: container, offset: ["start start", "end end"] });

@@ -12,10 +12,11 @@ function ProjectCaseStudy({ project, index }: { project: Project; index: number 
   const media = project.media ?? [];
   const interactive = ["pms", "blogapp", "cnc"].includes(project.id);
   const story = project.caseStudy;
-  return <article id={`project-${project.id}`} className="project-study" aria-labelledby={`study-${project.id}`}>
-    <header className="project-study-header"><span className="project-study-index">02.{String(index + 1).padStart(2, "0")}</span><p className="eyebrow">{project.featured ? "Featured case study" : "Project case study"}</p><span className="project-study-category">{project.context}</span></header>
-    <div className="project-study-layout">
+  return <article id={`project-${project.id}`} className={`project-study magazine-study ${media.length ? "magazine-study-with-media" : ""}`} aria-labelledby={`study-${project.id}`}>
+    <header className="project-study-header"><span className="project-study-index">02.{String(index + 1).padStart(2, "0")}</span><p className="eyebrow">{project.featured ? "Featured case study" : "Project case study"}</p><span className="project-study-category">{project.context}</span><h3 id={`study-${project.id}`} className="magazine-study-title"><Link href={`/projects/${project.id}`}>{project.title}</Link></h3></header>
+    <div className="project-study-layout responsive-split">
       <div className="project-study-visual">
+        <div className="visual-folio"><span>FIG. {String(index + 1).padStart(2, "0")}</span><span>{media.length ? "PROJECT MEDIA" : "INTERACTIVE DESIGN STUDY"}</span></div>
         {media.length ? <ProjectGallery media={media} title={project.title} /> : interactive ? <ProjectPlayground project={project} /> : <ProjectVisual project={project} controls />}
         {!media.length && <p className="project-study-visual-note">{interactive ? "Interactive concept / Sample data" : "Concept overview"}</p>}
         {media.length > 0 && interactive && <details className="project-study-demo"><summary>Explore the interactive concept <span aria-hidden="true">+</span></summary><ProjectPlayground project={project} /></details>}
@@ -24,7 +25,6 @@ function ProjectCaseStudy({ project, index }: { project: Project; index: number 
         {!!story?.architecture.length && <details className="project-spec-panel project-architecture-panel"><summary>System / Architecture <span aria-hidden="true">+</span></summary><ol>{story.architecture.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol></details>}
       </div>
       <div className="project-study-copy">
-        <h3 id={`study-${project.id}`}><Link href={`/projects/${project.id}`}>{project.title}</Link></h3>
         <p className="project-overview-label eyebrow">Overview / Project description</p>
         <p className="project-study-summary">{project.summary}</p>
         <div className="project-study-chapters">

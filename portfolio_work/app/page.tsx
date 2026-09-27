@@ -6,6 +6,8 @@ import Work from "@/components/Work";
 import Skills from "@/components/Skills";
 import ExperienceArchive from "@/components/ExperienceArchive";
 import Education from "@/components/Education";
+import Personal from "@/components/Personal";
+import ChapterLink from "@/components/ChapterLink";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -31,10 +33,15 @@ export default async function Home() {
       <main id="main" tabIndex={-1}>
         <Hero personalInfo={profile} />
         <About personalInfo={profile} />
+        <ChapterLink href="#work" index="02" title="See the thinking in practice" />
         <Work projects={projects} />
+        <ChapterLink href="#skills" index="03" title="Explore the tools behind the work" />
         <Skills skills={skills} projects={projects} />
         <ExperienceArchive />
         <Education education={education} />
+        <ChapterLink href="#personal" index="06" title="Meet the person beyond the projects" />
+        <Personal personalInfo={profile} />
+        <ChapterLink href="#contact" index="07" title="Start a conversation" />
         <Contact personalInfo={profile} />
       </main>
       <Footer personalInfo={profile} />

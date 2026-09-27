@@ -73,13 +73,13 @@ export default function Contact({ personalInfo }: { personalInfo: Profile }) {
     >
       <div className="wrap">
         <SectionHeading
-          index="06"
+          index="07"
           eyebrow="Contact"
           title="Let’s build something together."
           description="I'm looking for a software engineering internship. If you have a role, a question, or a project worth building — email is the fastest way to reach me."
         />
 
-        <div className="contact-editorial-grid">
+        <div className="contact-editorial-grid responsive-split">
           <Reveal>
             <dl className="border-t" style={{ borderColor: "var(--border)" }}>
               {channels.map(({ label, value, href, Icon }, i) => (

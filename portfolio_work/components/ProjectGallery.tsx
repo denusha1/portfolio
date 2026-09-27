@@ -12,10 +12,10 @@ export default function ProjectGallery({ media, title }: { media: ProjectMedia[]
   const current = ordered[index];
   const move = (delta: number) => setSelected((index + delta + ordered.length) % ordered.length);
   if (!current) return null;
-  return <div className="case-gallery-preview">
+  return <div className="case-gallery-preview magazine-gallery">
     <figure>
       <div className="case-gallery-screen">
-        {current.kind === "image" ? <a href={current.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size screenshot: ${current.caption || title}`}><Image src={current.src} alt={current.caption || `${title} screenshot ${index + 1}`} fill sizes="(max-width: 899px) 90vw, 65vw" className="object-contain" /><span className="case-gallery-expand"><ArrowUpRight size={15} />Full size</span></a> : <video key={current.src} src={current.src} controls playsInline preload="metadata" aria-label={current.caption || `${title} walkthrough`} />}
+        {current.kind === "image" ? <a href={current.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size screenshot: ${current.caption || title}`}><Image src={current.src} alt={current.caption || `${title} screenshot ${index + 1}`} fill sizes="(max-width: 899px) 92vw, 70vw" className="object-contain" /><span className="case-gallery-expand"><ArrowUpRight size={15} />Full size</span></a> : <video key={current.src} src={current.src} controls playsInline preload="metadata" aria-label={current.caption || `${title} walkthrough`} />}
       </div>
       <figcaption aria-live="polite" aria-atomic="true"><span>{current.caption || title}</span><span>{String(index + 1).padStart(2, "0")} / {String(ordered.length).padStart(2, "0")}</span></figcaption>
     </figure>
